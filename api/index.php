@@ -1,4 +1,3 @@
 <?php
 
-// Mengarahkan Vercel ke public/index.php yang bener
-require __DIR__ . '/public/index.php';
+require_once __DIR__ . '/../public/index.php';
