@@ -1,4 +1,4 @@
 <?php
 
-// Mengarahkan Vercel langsung ke file utama Laravel
+// Mengarahkan Vercel ke public/index.php bawaan Laravel
 require __DIR__ . '/public/index.php';
