@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('transaksi', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('penyewa_id')->constrained('penyewa')->onDelete('cascade');
+            $table->foreignId('lapangan_id')->constrained('lapangan')->onDelete('cascade');
+            
+            $table->date('tanggal_main');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
+            $table->integer('durasi_jam');
+            
+            $table->integer('total_harga');
+            $table->integer('dp_dibayar')->default(0); // Uang muka jika ada
+            $table->enum('status_pembayaran', ['belum_bayar', 'dp', 'lunas', 'batal'])->default('belum_bayar');
+            $table->string('metode_pembayaran')->nullable(); // Cash, Transfer, E-wallet
+            
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('transaksi');
+    }
+};
