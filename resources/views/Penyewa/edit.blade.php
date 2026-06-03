@@ -1,21 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Data Penyewa</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Ubah Data Penyewa</h1>
-            <p class="text-gray-500 text-sm">Perbarui informasi kontak untuk Penyewa: <strong class="text-gray-700">{{ $penyewa->nama }}</strong></p>
+@extends('layouts.app')
+
+{{-- 1. Mengisi Bagian Header / Judul Halaman di Topbar --}}
+@section('header')
+    <div>
+        <h1 class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Manajemen Pelanggan</h1>
+        <p class="text-xl font-black text-slate-800 tracking-tight">Ubah Data Penyewa</p>
+    </div>
+@endsection
+
+{{-- 2. Mengisi Bagian Konten Utama Form Edit --}}
+@section('content')
+    <div class="max-w-xl mx-auto bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
+
+        <div class="mb-6 border-b border-slate-100 pb-4">
+            <h3 class="font-bold text-slate-800 text-lg">Form Edit Kontak</h3>
+            <p class="text-slate-500 text-sm mt-0.5">
+                Perbarui informasi identitas atau kontak untuk Penyewa:
+                <span class="font-bold text-slate-700">{{ $penyewa->nama }}</span>
+            </p>
         </div>
 
         @if ($errors->any())
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                <ul class="list-disc list-inside text-sm">
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm">
+                <div class="font-semibold mb-1">⚠️ Mohon periksa kembali inputan Anda:</div>
+                <ul class="list-disc list-inside space-y-0.5 text-xs text-red-600">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -26,32 +34,43 @@
         <form action="/penyewa/{{ $penyewa->id }}" method="POST">
             @csrf
             @method('PUT')
-            
+
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-semibold mb-2">Nama Penyewa</label>
-                <input type="text" name="nama" value="{{ old('nama', $penyewa->nama) }}" class="w-full p-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nama Lengkap / Nama Tim">
+                <label class="block text-slate-700 text-sm font-bold mb-2">Nama Penyewa</label>
+                <input type="text" name="nama" value="{{ old('nama', $penyewa->nama) }}"
+                    placeholder="Nama Lengkap / Nama Tim"
+                    class="w-full p-3 border rounded-xl text-sm focus:outline-none transition {{ $errors->has('nama') ? 'border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' : 'border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' }}">
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-semibold mb-2">No. WhatsApp / HP</label>
-                <input type="text" name="no_hp" value="{{ old('no_hp', $penyewa->no_hp) }}" class="w-full p-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="08xxxxxxxxxx">
+                <label class="block text-slate-700 text-sm font-bold mb-2">No. WhatsApp / HP</label>
+                <input type="text" name="no_hp" value="{{ old('no_hp', $penyewa->no_hp) }}" placeholder="08xxxxxxxxxx"
+                    class="w-full p-3 border rounded-xl text-sm font-mono focus:outline-none transition {{ $errors->has('no_hp') ? 'border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' : 'border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' }}">
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-semibold mb-2">Alamat Email</label>
-                <input type="email" name="email" value="{{ old('email', $penyewa->email) }}" class="w-full p-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="contoh@domain.com">
+                <label class="block text-slate-700 text-sm font-bold mb-2">Alamat Email</label>
+                <input type="email" name="email" value="{{ old('email', $penyewa->email) }}"
+                    placeholder="contoh@domain.com"
+                    class="w-full p-3 border rounded-xl text-sm focus:outline-none transition {{ $errors->has('email') ? 'border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-500/10' : 'border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' }}">
             </div>
 
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-semibold mb-2">Alamat / Keterangan (Opsional)</label>
-                <textarea name="alamat" rows="3" class="w-full p-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Tulis alamat rumah atau catatan tambahan pelanggan...">{{ old('alamat', $penyewa->alamat) }}</textarea>
+                <label class="block text-slate-700 text-sm font-bold mb-2">Alamat / Keterangan (Opsional)</label>
+                <textarea name="alamat" rows="3" placeholder="Tulis alamat rumah atau catatan tambahan pelanggan..."
+                    class="w-full p-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition">{{ old('alamat', $penyewa->alamat) }}</textarea>
             </div>
 
-            <div class="flex justify-end gap-3">
-                <a href="/penyewa" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">Batal</a>
-                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg shadow transition cursor-pointer">Simpan Perubahan</button>
+            <div class="flex justify-end items-center gap-3 border-t border-slate-100 pt-4">
+                <a href="/penyewa"
+                    class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+                    Batal
+                </a>
+                <button type="submit"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-emerald-600/20 transition cursor-pointer">
+                    Simpan Perubahan
+                </button>
             </div>
         </form>
     </div>
-</body>
-</html>
+@endsection

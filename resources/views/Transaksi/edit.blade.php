@@ -1,22 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Booking Transaksi</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Ubah Data / Pelunasan Booking</h1>
-            <p class="text-gray-500 text-sm">Ubah rincian jam bermain atau sesuaikan riwayat pembayaran nota.</p>
+@extends('layouts.app')
+
+{{-- 1. Mengisi Bagian Header / Judul Halaman di Topbar --}}
+@section('header')
+    <div>
+        <h1 class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Transaksi Lapangan</h1>
+        <p class="text-xl font-black text-slate-800 tracking-tight">Edit / Pelunasan Booking</p>
+    </div>
+@endsection
+
+{{-- 2. Mengisi Bagian Konten Utama Form Edit --}}
+@section('content')
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
+        
+        <div class="mb-6 border-b border-slate-100 pb-4">
+            <h3 class="font-bold text-slate-800 text-lg">Ubah Rincian & Status Nota</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Ubah rincian jam bermain atau sesuaikan nominal serta status pembayaran pelanggan.</p>
         </div>
 
         @if ($errors->any())
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                <ul class="list-disc list-inside text-sm">
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm">
+                <div class="font-semibold mb-1">⚠️ Gagal Memperbarui: Periksa kembali data berikut</div>
+                <ul class="list-disc list-inside space-y-0.5 text-xs text-red-600">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -28,72 +32,51 @@
             @csrf
             @method('PUT')
             
-            <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Penyewa</label>
-                    <select name="penyewa_id" class="w-full p-2.5 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-slate-700 text-sm font-bold mb-2">Penyewa</label>
+                    <select name="penyewa_id" class="w-full p-3 border border-slate-200 rounded-xl bg-white text-sm text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition">
                         @foreach($penyewa as $p)
-                            <option value="{{ $p->id }}" {{ old('penyewa_id', $transaksi->penyewa_id) == $p->id ? 'selected' : '' }}>{{ $p->nama }}</option>
+                            <option value="{{ $p->id }}" {{ old('penyewa_id', $transaksi->penyewa_id) == $p->id ? 'selected' : '' }}>
+                                {{ $p->nama }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Lapangan</label>
-                    <select name="lapangan_id" class="w-full p-2.5 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-slate-700 text-sm font-bold mb-2">Lapangan</label>
+                    <select name="lapangan_id" class="w-full p-3 border border-slate-200 rounded-xl bg-white text-sm text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition">
                         @foreach($lapangan as $l)
-                            <option value="{{ $l->id }}" {{ old('lapangan_id', $transaksi->lapangan_id) == $l->id ? 'selected' : '' }}>{{ $l->nama_lapangan }} (Rp {{ number_format($l->harga_per_jam, 0, ',', '.') }}/jam)</option>
+                            <option value="{{ $l->id }}" {{ old('lapangan_id', $transaksi->lapangan_id) == $l->id ? 'selected' : '' }}>
+                                {{ $l->nama_lapangan }} (Rp {{ number_format($l->harga_per_jam, 0, ',', '.') }}/jam)
+                            </option>
                         @endforeach
                     </select>
                 </div>
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-semibold mb-2">Tanggal Main</label>
-                <input type="date" name="tanggal_main" value="{{ old('tanggal_main', $transaksi->tanggal_main) }}" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                <label class="block text-slate-700 text-sm font-bold mb-2">Tanggal Main</label>
+                <input type="date" name="tanggal_main" value="{{ old('tanggal_main', $transaksi->tanggal_main) }}" 
+                       class="w-full p-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition">
             </div>
 
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Jam Mulai</label>
-                    <input type="time" name="jam_mulai" value="{{ old('jam_mulai', date('H:i', strtotime($transaksi->jam_mulai))) }}" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-slate-700 text-sm font-bold mb-2">Jam Mulai</label>
+                    <input type="time" name="jam_mulai" value="{{ old('jam_mulai', date('H:i', strtotime($transaksi->jam_mulai))) }}" 
+                           class="w-full p-3 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition">
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Jam Selesai</label>
-                    <input type="time" name="jam_selesai" value="{{ old('jam_selesai', date('H:i', strtotime($transaksi->jam_selesai))) }}" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-slate-700 text-sm font-bold mb-2">Jam Selesai</label>
+                    <input type="time" name="jam_selesai" value="{{ old('jam_selesai', date('H:i', strtotime($transaksi->jam_selesai))) }}" 
+                           class="w-full p-3 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition">
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">DP Dibayar (Rp)</label>
-                    <input type="number" name="dp_dibayar" value="{{ old('dp_dibayar', $transaksi->dp_dibayar) }}" min="0" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Status Bayar</label>
-                    <select name="status_pembayaran" class="w-full p-2.5 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                        <option value="belum_bayar" {{ old('status_pembayaran', $transaksi->status_pembayaran) == 'belum_bayar' ? 'selected' : '' }}>Belum Bayar</option>
-                        <option value="dp" {{ old('status_pembayaran', $transaksi->status_pembayaran) == 'dp' ? 'selected' : '' }}>DP (Uang Muka)</option>
-                        <option value="lunas" {{ old('status_pembayaran', $transaksi->status_pembayaran) == 'lunas' ? 'selected' : '' }}>Lunas</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Metode Pembayaran</label>
-                    <select name="metode_pembayaran" class="w-full p-2.5 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                        <option value="cash" {{ old('metode_pembayaran', $transaksi->metode_pembayaran) == 'cash' ? 'selected' : '' }}>Cash (Tunai)</option>
-                        <option value="transfer" {{ old('metode_pembayaran', $transaksi->metode_pembayaran) == 'transfer' ? 'selected' : '' }}>Transfer Bank</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="flex justify-end gap-3">
-                <a href="/transaksi" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">Batal</a>
-                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg shadow transition cursor-pointer">Simpan Perubahan</button>
-            </div>
-        </form>
-    </div>
-</body>
-</html>
+                    <label class="block text-slate-700 text-sm font-bold mb-2">DP Dibayar (Rp)</label>
+                    <input type="number" name="dp_dibayar" value="{{ old
